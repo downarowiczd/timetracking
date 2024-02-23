@@ -1,0 +1,2 @@
+# timetracking
+Go Timetracking CLI
