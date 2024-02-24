@@ -1,2 +1,2 @@
 databasedriver: sqlite
-databasefile: recordings.db
+databasefile: recording_test.db

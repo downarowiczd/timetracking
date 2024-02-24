@@ -15,6 +15,22 @@ type Project struct {
 	Status int
 }
 
+func (p *Project) StatusString() string {
+	if p.Status == 0 {
+		return "active"
+	} else {
+		return "inactive"
+	}
+}
+
+func (r *Recording) StatusString() string {
+	if r.Status == 0 {
+		return "active"
+	} else {
+		return "inactive"
+	}
+}
+
 /**
  * Recording status:
  * 0 - active

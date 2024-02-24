@@ -92,6 +92,24 @@ func (r *SQLiteRepository) AllProjects() ([]Project, error) {
 	return all, nil
 }
 
+func (r *SQLiteRepository) AllActiveProjects() ([]Project, error) {
+	rows, err := r.db.Query("SELECT * FROM project WHERE status = 0")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var all []Project
+	for rows.Next() {
+		var project Project
+		if err := rows.Scan(&project.Tag, &project.Name, &project.Type, &project.Status); err != nil {
+			return nil, err
+		}
+		all = append(all, project)
+	}
+	return all, nil
+}
+
 func (r *SQLiteRepository) AllRecordings() ([]Recording, error) {
 	rows, err := r.db.Query("SELECT * FROM record")
 	if err != nil {
@@ -112,7 +130,7 @@ func (r *SQLiteRepository) AllRecordings() ([]Recording, error) {
 
 func (r *SQLiteRepository) GetProjectByTag(tag string) (*Project, error) {
 	row := r.db.QueryRow("SELECT * FROM project WHERE tag = ?", tag)
-
+	
 	var project Project
 	if err := row.Scan(&project.Tag, &project.Name, &project.Type, &project.Status); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -141,7 +159,7 @@ func (r *SQLiteRepository) GetRecordingsByProjectTag(tag string) ([]Recording, e
 	return all, nil
 }
 
-func (r *SQLiteRepository) GetRecordingsByDateRage(start, end time.Time) ([]Recording, error) {
+func (r *SQLiteRepository) GetRecordingsByDateRange(start, end time.Time) ([]Recording, error) {
 	rows, err := r.db.Query("SELECT * FROM record startTime >= ? AND endTime <= ?", start, end)
 	if err != nil {
 		return nil, err
